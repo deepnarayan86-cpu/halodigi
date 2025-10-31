@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GSAP Scroll: Section Background Color Change</title>
+  <style>
+    /* Basic layout: full-screen stacked sections */
+    html,body { height:100%; margin:0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+    /* body { transition: background-color 0.6s ease; } */
+    .container { width:100%; }
+    section {
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:2rem;
+      box-sizing:border-box;
+      color: #111;
+      font-size: clamp(18px, 3vw, 28px);
+    }
+    .card {
+      background: rgba(255,255,255,0.85);
+      padding:1.6rem 2rem;
+      border-radius:12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      max-width:900px;
+      text-align:center;
+    }
+    /* Helpful UI hint at bottom-right */
+    .hint{
+      position:fixed; right:12px; bottom:12px; font-size:13px; background:rgba(255,255,255,0.8); padding:8px 10px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    /* Optional: different text color for dark backgrounds */
+    .dark-text { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Each section has a data-bg attribute that controls the target background color -->
+    <section data-bg="#FFEECC">
+      <div class="card">
+        <h1>Section 1</h1>
+        <p>Light warm color — body background will transition to match this color as you scroll here.</p>
+      </div>
+    </section>
+
+    <section data-bg="#D0F2FF">
+      <div class="card">
+        <h1>Section 2</h1>
+        <p>Cool blue tint — smooth transition using GSAP + ScrollTrigger.</p>
+      </div>
+    </section>
+
+    <section data-bg="#E6F7E6">
+      <div class="card">
+        <h1>Section 3</h1>
+        <p>Soft green background for a calm look.</p>
+      </div>
+    </section>
+
+    <section data-bg="#1E1B26" data-dark="true">
+      <div class="card dark-text">
+        <h1>Section 4</h1>
+        <p>Dark background — note the card uses light text for contrast.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="hint">Scroll to change background color (GSAP + ScrollTrigger)</div>
+
+  <!-- GSAP + ScrollTrigger from CDN -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script>
+    // Register plugin
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Grab all sections
+    const sections = document.querySelectorAll('section');
+
+    // A reusable function to tween the body background color
+    const tweenBodyBg = (color) => {
+      // Quick guard for invalid values
+      if (!color) return;
+      gsap.to(document.body, {
+        backgroundColor: color,
+        duration: 0.8,
+        ease: 'power1.out',
+      });
+    };
+
+    // Create a ScrollTrigger for every section
+    sections.forEach((sec) => {
+      const bg = sec.getAttribute('data-bg');
+
+      ScrollTrigger.create({
+        trigger: sec,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: () => tweenBodyBg(bg),
+        onEnterBack: () => tweenBodyBg(bg),
+        // Optional: uncomment to debug start/end positions
+        // markers: true,
+      });
+    });
+
+    // Initialize the background to the first section color on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const firstColor = sections[0]?.getAttribute('data-bg');
+      if (firstColor) document.body.style.backgroundColor = firstColor;
+    });
+
+    /* ----- Extra: Smooth wheel-driven snap (optional) -----
+       If you'd like the page to "snap" to each section on mouse wheel events (one section per scroll),
+       you can add a small wheel handler. It's commented out because ScrollTrigger already covers
+       smooth transitions, but I've included it for convenience.
+    */
+    // let isSnapping = false;
+    // window.addEventListener('wheel', (e) => {
+    //   if (isSnapping) return;
+    //   const deltaY = e.deltaY;
+    //   const currentScroll = window.scrollY;
+    //   const vh = window.innerHeight;
+    //   const currentIndex = Math.round(currentScroll / vh);
+    //   let targetIndex = currentIndex + (deltaY > 0 ? 1 : -1);
+    //   targetIndex = Math.max(0, Math.min(sections.length - 1, targetIndex));
+    //   if (targetIndex === currentIndex) return;
+    //   isSnapping = true;
+    //   gsap.to(window, {scrollTo: {y: sections[targetIndex], autoKill:false}, duration:0.8, onComplete:() => { isSnapping = false; }});
+    // });
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Line Draw Animation</title>
+<style>
+body{margin:0;background:#081017;color:#fff;font-family:Inter,Arial}
+.timeline{position:relative;width:3px;background:#ffffff22;margin:0 auto;height:1800px;transform-origin:top;transform:scaleY(0);}
+.step{max-width:700px;margin:100px auto;text-align:center;opacity:0}
+.num{font-size:80px;color:#00d1b2;font-weight:800}
+</style>
+</head>
+<body>
+<div class="timeline"></div>
+<div class="step"><div class="num">01</div><h3>Strategy</h3></div>
+<div class="step"><div class="num">02</div><h3>Design</h3></div>
+<div class="step"><div class="num">03</div><h3>Develop</h3></div>
+<div class="step"><div class="num">04</div><h3>Support</h3></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+gsap.to('.timeline',{scrollTrigger:{trigger:'.timeline',start:'top 90%',scrub:1},scaleY:1,ease:'none'});
+gsap.from('.step',{scrollTrigger:{trigger:'.timeline',start:'top 90%',end:'bottom 10%',scrub:1},
+  opacity:0,y:80,stagger:0.4});
+</script>
+</body>
+</html>

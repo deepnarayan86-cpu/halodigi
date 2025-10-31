@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Design | Development | SEO</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6fc;
+    }
+
+    .banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 80px 10%;
+      background: linear-gradient(135deg, #4786ee 40%, #fd7951 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-content {
+      max-width: 600px;
+      z-index: 2;
+    }
+
+    .banner h1 {
+      font-size: 3rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .banner p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      background: white;
+      color: #4786ee;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #fd7951;
+      color: #fff;
+    }
+
+    .banner::after {
+      content: "";
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      animation: float 6s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(20px); }
+    }
+
+    .banner img {
+      width: 420px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .banner img {
+        margin-top: 40px;
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="banner">
+    <div class="banner-content">
+      <h1>Website Design, Development & SEO</h1>
+      <p>Transform your online presence with modern web design, responsive development, and result-driven SEO strategies.</p>
+      <a href="#" class="btn">Get Started</a>
+    </div>
+    <img src="https://cdn.dribbble.com/users/1162077/screenshots/3848914/programmer.gif" alt="Web Design Banner">
+  </section>
+
+</body>
+</html>

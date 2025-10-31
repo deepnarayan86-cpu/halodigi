@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GSAP Timeline Animation</title>
+  <style>
+    :root{
+      --bg:#0f1720; --muted:#9aa3ad; --accent:#ff2d6e;
+      --step1:#ff2d6e; --step2:#8fd84a; --step3:#00d1b2; --step4:#ff8a50;
+      font-family: Inter, system-ui, Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#0b1116 0%, #0f1720 100%);color:#fff}
+    .wrap{max-width:1000px;margin:60px auto;padding:40px 20px}
+    .timeline{
+      position:relative;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:60px 40px;
+      align-items:center;
+    }
+    /* vertical dashed line center */
+    .timeline::before{
+      content:'';position:absolute;left:50%;transform:translateX(-50%);top:0;height:100%;width:4px;background:linear-gradient(#ffffff22,#ffffff05);border-radius:4px;z-index:0;
+    }
+    .step{
+      position:relative;z-index:2;display:flex;gap:24px;align-items:center;min-height:160px;
+      padding:12px 20px;
+    }
+    .step .number{
+      font-weight:800;font-size:90px;line-height:1;color:var(--step1);opacity:0.95;letter-spacing:-4px;min-width:140px;text-align:center
+    }
+    .left .number{order:0;text-align:right}
+    .right .number{order:1;text-align:left}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      backdrop-filter:blur(6px);
+      border-radius:12px;padding:18px 22px;flex:1;display:flex;align-items:center;gap:16px;
+      box-shadow:0 6px 18px rgba(2,6,10,0.6);
+    }
+    .thumb{
+      width:110px;height:110px;border-radius:999px;flex:0 0 110px;overflow:hidden;border:6px solid rgba(255,255,255,0.06);box-sizing:border-box;
+      display:inline-block;background-size:cover;background-position:center;
+      transform:scale(.95);
+    }
+    .meta{font-size:14px;color:var(--muted)}
+    .title{font-size:28px;margin:0 0 6px}
+    /* alternate colors for numbers */
+    .step[data-step="1"] .number{color:var(--step1)}
+    .step[data-step="2"] .number{color:var(--step2)}
+    .step[data-step="3"] .number{color:var(--step3)}
+    .step[data-step="4"] .number{color:var(--step4)}
+    /* little connector circle on center line */
+    .connector{position:absolute;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:transparent;border:3px dashed rgba(255,255,255,0.06);top:calc(var(--y) - 9px);pointer-events:none}
+    @media(max-width:800px){
+      .timeline{grid-template-columns:1fr;}
+      .timeline::before{left:28px}
+      .step{padding-left:40px}
+      .left .number{text-align:left}
+      .card{flex-direction:row}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 style="font-weight:800;letter-spacing:-1px">Animated Process Timeline — GSAP + ScrollTrigger</h1>
+    <p style="color:var(--muted);margin-top:6px">Scroll down to reveal the four steps. Uses <strong>GSAP</strong> and <strong>ScrollTrigger</strong>.</p>
+
+    <div class="timeline" id="timeline">
+
+      <div class="step left" data-step="1">
+        <div class="number">01</div>
+        <div class="card">
+          <div class="thumb" style="background-image:url('/mnt/data/section.jpg');background-position:20% 8%"></div>
+          <div>
+            <h3 class="title">Strategy</h3>
+            <div class="meta">We define your competition and target audience. Discover what is working in your online industry, then design your website accordingly.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step right" data-step="2">
+        <div class="card">
+          <div>
+            <h3 class="title">Design</h3>
+            <div class="meta">Color scheme, layout, sitemap, and style. We will bring your brand to life with a one-of-a-kind masterpiece, built just for you.</div>
+          </div>
+          <div class="thumb" style="background-image:url('/mnt/data/section.jpg');background-position:50% 30%"></div>
+        </div>
+        <div class="number">02</div>
+      </div>
+
+      <div class="step left" data-step="3">
+        <div class="number">03</div>
+        <div class="card">
+          <div class="thumb" style="background-image:url('/mnt/data/section.jpg');background-position:60% 60%"></div>
+          <div>
+            <h3 class="title">Develop</h3>
+            <div class="meta">We turn your ideas into a reality. The site is placed on a development server where you can watch the whole process live.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step right" data-step="4">
+        <div class="card">
+          <div>
+            <h3 class="title">Support</h3>
+            <div class="meta">This is where you go live to the world. Design, marketing, and maintenance; we'll be at your side for the life of your site.</div>
+          </div>
+          <div class="thumb" style="background-image:url('/mnt/data/section.jpg');background-position:10% 80%"></div>
+        </div>
+        <div class="number">04</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // animate each step as it enters
+    gsap.utils.toArray('.step').forEach((step, i) => {
+      const number = step.querySelector('.number');
+      const thumb = step.querySelector('.thumb');
+      const card = step.querySelector('.card');
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: step,
+          start: 'top 80%',
+          end: 'bottom 20%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+
+      tl.from(number, {x: i % 2 === 0 ? -60 : 60, opacity:0, scale:0.9, duration:0.6, ease:'power2.out'})
+        .from(thumb, {y: 30, opacity:0, duration:0.6, ease:'power2.out'}, '-=0.4')
+        .from(card.querySelector('.title'), {y:12, opacity:0, duration:0.45}, '-=0.35')
+        .from(card.querySelector('.meta'), {y:8, opacity:0, duration:0.45}, '-=0.3');
+    });
+
+    // subtle pop on hover
+    document.querySelectorAll('.step').forEach(s => {
+      s.addEventListener('mouseenter', ()=>{
+        gsap.to(s.querySelector('.thumb'),{scale:1.05,duration:0.4,ease:'power3.out'});
+      });
+      s.addEventListener('mouseleave', ()=>{
+        gsap.to(s.querySelector('.thumb'),{scale:0.95,duration:0.5,ease:'power3.out'});
+      });
+    });
+
+    // parallax movement of numbers based on mouse
+    const timelineEl = document.getElementById('timeline');
+    timelineEl.addEventListener('mousemove', (e) => {
+      const rect = timelineEl.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 .. 0.5
+      gsap.to('.number',{x: px * 12, duration:0.6, ease:'power3.out'});
+    });
+
+    // initial staggered reveal for page load
+    gsap.from('.step',{opacity:0,y:30,stagger:0.12,duration:0.8,ease:'power2.out'});
+    
+  </script>
+</body>
+</html>
